@@ -75,4 +75,18 @@ describe DataNapper do
       end
     end
   end
+  context "operator mixing" do
+    describe '#math(5+5-20)' do
+      it 'does addition and subtraction where negative returned' do
+        result = DataNapper.math('5+5-20')
+        expect(result).to eq(-10)
+      end
+    end
+    describe '#math(34-12*2)' do
+      it 'does multiplication and subtraction where rtl does not work' do
+        result = DataNapper.math('34-12*2')
+        expect(result).to eq(10)
+      end
+    end
+  end
 end
