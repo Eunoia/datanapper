@@ -88,5 +88,11 @@ describe DataNapper do
         expect(result).to eq(10)
       end
     end
+    describe '#math(34-12/4*2)' do
+      it 'does subtraction, and div/multi' do
+        result = DataNapper.math('34-12/4*2')
+        expect(result).to eq(28)
+      end
+    end
   end
 end

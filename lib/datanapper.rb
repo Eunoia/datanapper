@@ -5,7 +5,7 @@ module Operators
   DIVIS = /(\d+)(\/)(\d+)/
   ADDIT = /(\d+)(\+)(\d+)/
   SUBTR = /(\d+)(\-)(\d+)/
-  OPERATOR_PRECEDENCE = [MULTI, DIVIS, ADDIT, SUBTR]
+  OPERATOR_PRECEDENCE = [DIVIS, MULTI, ADDIT, SUBTR]
 end
 
 module DataNapper
