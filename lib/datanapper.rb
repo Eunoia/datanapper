@@ -1,28 +1,22 @@
 require "datanapper/version"
+require 'forwardable'
 
-module Operators
-  MULTI = /(\d+)(\*)(\d+)/
-  DIVIS = /(\d+)(\/)(\d+)/
-  ADDIT = /(\d+)(\+)(\d+)/
-  SUBTR = /(\d+)(\-)(\d+)/
-  OPERATOR_PRECEDENCE = [DIVIS, MULTI, ADDIT, SUBTR]
-end
+class LimitedSizedQueue
+  extend Forwardable
+  def_delegators :@queue, :size, :inspect, :clear, :all, :to_a, :flatten, :empty?
+  def_delegators :@queue, :[], :select, :sample, :reject, :map, :select, :collect
 
-module DataNapper
-  include Operators
-  POSSIBLE_OPERATIONS = /.[\+-\/\*]./
-  def self.math(string)
-    while string.match(POSSIBLE_OPERATIONS) do
-      OPERATOR_PRECEDENCE.each do |operator|
-        while string.match(operator) do
-          match = string.scan(operator)
-          match = match.pop
-          a = Integer(match[0])
-          b = Integer(match[2])
-          string.gsub!(match.join, a.send(match[1], b).to_s)
-        end
-      end
-    end
-    string.to_i
+  attr_reader :max_size
+ 
+  def initialize(size)
+    @queue = Array.new
+    @max_size = size
+    
   end
+
+  def push(element)
+    @queue.shift if @queue.size > @max_size - 1
+    @queue.push(element)
+  end
+
 end

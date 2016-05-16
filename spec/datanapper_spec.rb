@@ -1,98 +1,41 @@
 require 'spec_helper'
 
-describe DataNapper do
-  context "no operator mixing" do
-    describe '#math(5+5)' do
-      it 'does simple addition' do
-        result = DataNapper.math('5+5')
-        expect(result).to eq(10)
-      end
-    end
-    describe '#math(92432+123355)' do
-      it 'does multi digit addition' do
-        result = DataNapper.math('92432+123355')
-        expect(result).to eq(215_787)
-      end
-    end
-    describe '#math(924+32+123+355)' do
-      it 'does multi digit, multi part addition' do
-        result = DataNapper.math('924+32+123+355')
-        expect(result).to eq(1_434)
-      end
-    end  
-    describe '#math(5-5)' do
-      it 'does simple subtraction' do
-        result = DataNapper.math('5-5')
-        expect(result).to eq(0)
-      end
-    end
-    describe '#math(747-73-232)' do
-      it 'does multi digit, odd-multi part subtraction' do
-        result = DataNapper.math('747-73-232')
-        expect(result).to eq(442)
-      end
-    end  
-    describe '#math(92432-13355)' do
-      it 'does multi digit subtraction' do
-        result = DataNapper.math('92432-13355')
-        expect(result).to eq(79_077)
-      end
-    end
-    describe '#math(5*5)' do
-      it 'does simple multiplation' do
-        result = DataNapper.math('5*5')
-        expect(result).to eq(25)
-      end
-    end
-    describe '#math(747*73*232)' do
-      it 'does multi digit, odd-multi part multiplation' do
-        result = DataNapper.math('747*73*232')
-        expect(result).to eq(12_651_192)
-      end
-    end  
-    describe '#math(92432*13355)' do
-      it 'does multi digit multiplation' do
-        result = DataNapper.math('92432*13355')
-        expect(result).to eq(1_234_429_360)
-      end
-    end
-    describe '#math(5/5)' do
-      it 'does simple division' do
-        result = DataNapper.math('5/5')
-        expect(result).to eq(1)
-      end
-    end
-    describe '#math(747/83/3)' do
-      it 'does multi digit, odd-multi part 747/83/3' do
-        result = DataNapper.math('747/83/3')
-        expect(result).to eq(3)
-      end
-    end  
-    describe '#math(92432/53)' do
-      it 'does multi digit 92432/53' do
-        result = DataNapper.math('92432/53')
-        expect(result).to eq(1_744)
-      end
+describe LimitedSizedQueue do
+  describe '#new(10)' do
+    it 'returns a LimitedSizedQueue' do
+      result = LimitedSizedQueue.new(10)
+      expect(result).to eq(result)
     end
   end
-  context "operator mixing" do
-    describe '#math(5+5-20)' do
-      it 'does addition and subtraction where negative returned' do
-        result = DataNapper.math('5+5-20')
-        expect(result).to eq(-10)
-      end
+
+  describe '#max_size' do
+    it 'returns the size of the limited sized queue' do
+      result = LimitedSizedQueue.new(10)
+      expect(result.max_size).to eq(10) 
     end
-    describe '#math(34-12*2)' do
-      it 'does multiplication and subtraction where rtl does not work' do
-        result = DataNapper.math('34-12*2')
-        expect(result).to eq(10)
-      end
+  end
+
+  describe '#push' do
+    it 'does not grow the queue after reaching max size' do
+      result = LimitedSizedQueue.new(3)
+      result.push "ananas"
+      result.push "apple"
+      result.push "banana"
+      result.push "pear"
+      result.push "onion"
+      result.push "tiger"
+
+      expect(result.size).to eq(3)
     end
-    describe '#math(34-12/4*2)' do
-      it 'does subtraction, and div/multi' do
-        result = DataNapper.math('34-12/4*2')
-        expect(result).to eq(28)
-      end
+  end
+
+
+  describe '#size' do
+    it 'returns how many items are on the queue' do
+      result = LimitedSizedQueue.new(10)
+      result.push "apple"
+      result.push "pear"
+      expect(result.size).to eq(2)
     end
   end
 end
